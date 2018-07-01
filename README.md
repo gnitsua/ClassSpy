@@ -3,7 +3,7 @@ Python tool for inspecting object side effects
 
 Some times you have code that uses a python object as a central data structure to complete a complicated calculation. We all know we shouldn't have code with side effects, but sometimes we do it on accident. Class spy is a tool that allows you to see how variables within the datastore are connected, allowing you to find unintentional coupling and other difficult to debug issues. This project was conceived because I inherited a large project that followed this pattern and was tasked to clean it up. The generated graph for this project looked a little like this:
 
-![complicated.png](https://raw.githubusercontent.com/mudkipmaster/ClassSpy/readmeImages/complex.png)
+![complicated.png](https://github.com/mudkipmaster/ClassSpy/raw/master/readmeImages/complex.png)
 
 Obviously this is an extreme example, but for a simpler example consider the following code:
 
@@ -19,7 +19,7 @@ test.buzz = test.fizz
 
 Already this starts to get confusing. To analyze this using ClassSpy, simply modify the class of `test` so that it extends `ClassSpy` and add a few extra lines to your code which results in this:
 
-![simple.png](https://raw.githubusercontent.com/mudkipmaster/ClassSpy/readmeImages/simple.png)
+![simple.png](https://github.com/mudkipmaster/ClassSpy/raw/master/readmeImages/simple.png)
 
 This example code can be found in `test.py`
 
