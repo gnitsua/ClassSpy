@@ -1,8 +1,8 @@
 import inspect
 
+import networkx as nx
 import numpy as np
 import pandas as pd
-
 from graphviz import Digraph
 
 
@@ -34,35 +34,42 @@ class ClassSpy(object):
         else:
             return object.__getattribute__(self, item)
 
-    def plot(self,variable_subset=None):
+    def plot_for_variable(self, variable):
+        graph = nx.DiGraph()
+        variable_edges = pd.read_csv("connections.csv")
+        complete_edges = variable_edges[
+            variable_edges['Variable_set'].notnull() & variable_edges['Variable_get'].notnull()]
+        for index, row in complete_edges.iterrows():
+            graph.add_edge(row[4], row[0])
+        reversed = nx.reverse(graph)
+
+        variable_decendents = list(nx.descendants(reversed, variable))
+        variable_decendents.append(variable)
+        self.plot(variable_decendents)
+
+    def plot(self, variable_subset=None):
         dot = Digraph(comment='Class Spy generated Graph', strict=True, engine="dot")
-        # splines="true"
-        # overlap_scaling = '10'
         dot.attr(overlap="scale", rankdir='LR', size='180,180')
         dot.attr('node', color="#000000", style='solid')
         dot.attr('node', shape='box')
-        # dot.format = 'svg'
         variable_edges = pd.read_csv("connections.csv")
 
         complete_edges = variable_edges[
             variable_edges['Variable_set'].notnull() & variable_edges['Variable_get'].notnull()]
         for index, row in complete_edges.iterrows():
-            # with dot.subgraph(name=key, node_attr={'shape': 'box'},body="test") as c:
-#             if (type(
-#                     variable_subset) == list):  # add the edge if it is in the subset, or if we weren't passed a subset
-#                 if (row[0] not in variable_subset or row[4] not in variable_subset):
-#                     continue
+            if (type(variable_subset) == list):
+                if (row[0] not in variable_subset or row[4] not in variable_subset):
+                    continue  # if we were passed a list of variables that are the only ones we want to graph and this variable isn't one of them skip it
 
             dot.node(row[0])
             dot.node(row[4])
             dot.edge(row[4], row[0])
 
-        #dot.save('graph.dot')
         dot.render('Classspy.gv', view=True)
 
     def save_connections(self):
-        sets = pd.DataFrame(self.sets,columns=["Variable","Type","File","LineNo"],dtype="str")
-        gets = pd.DataFrame(self.gets,columns=["Variable","File","LineNo"],dtype="str")
+        sets = pd.DataFrame(self.sets, columns=["Variable", "Type", "File", "LineNo"], dtype="str")
+        gets = pd.DataFrame(self.gets, columns=["Variable", "File", "LineNo"], dtype="str")
         sets.drop_duplicates()
         gets.drop_duplicates()
         # write edge connection csv
@@ -80,12 +87,10 @@ class ArraySpy(np.ndarray):
         return obj
 
     def __array_finalize__(self, obj):
-        # see InfoArray.__array_finalize__ for comments
         if obj is None: return
         self.info = getattr(obj, 'info', None)
 
     def __getitem__(self, item):
-        # print(self.name + "[" + str(item) + "]")
         attr = np.ndarray.__getitem__(self, item)
         if issubclass(type(attr), np.ndarray):  # handle multi dimensional arrays
             return ArraySpy(attr, self.name, self.gets, self.sets)
@@ -96,7 +101,6 @@ class ArraySpy(np.ndarray):
             return attr
 
     def __setitem__(self, key, value):
-        # print(self.name,value)
         caller = inspect.currentframe().f_back
         self.sets.append(
             [self.name, type(value).__name__, caller.f_code.co_filename.split("\\")[-1], caller.f_lineno])

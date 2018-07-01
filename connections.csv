@@ -6,3 +6,4 @@ fizz,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,12,
 foo,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,13,fizz
 foo,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,13,bar
 fizz,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,14,fizz
+buzz,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,15,fizz

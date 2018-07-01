@@ -12,6 +12,7 @@ if(__name__ == "__main__"):
     test.fizz = 10
     test.foo = test.fizz + test.bar
     test.fizz *= 10
+    test.buzz = test.fizz
 
     test.save_connections()
     test.plot()
