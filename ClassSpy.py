@@ -88,12 +88,17 @@ class ArraySpy(np.ndarray):
 
     def __array_finalize__(self, obj):
         if obj is None: return
-        self.info = getattr(obj, 'info', None)
+        self.name = getattr(obj, 'name', None)
+        self.gets = getattr(obj, 'gets', None)
+        self.sets = getattr(obj, 'sets', None)
 
     def __getitem__(self, item):
         attr = np.ndarray.__getitem__(self, item)
         if issubclass(type(attr), np.ndarray):  # handle multi dimensional arrays
-            return ArraySpy(attr, self.name, self.gets, self.sets)
+            try:
+                return ArraySpy(attr, self.name, self.gets, self.sets)
+            except AttributeError:#catch when array is not already an ArraySpy
+                return ArraySpy(attr, self.name, self.gets, self.sets)
         else:
             caller = inspect.currentframe().f_back
             object.__getattribute__(self, "gets").append(
