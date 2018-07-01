@@ -16,3 +16,4 @@ if(__name__ == "__main__"):
 
     test.save_connections()
     test.plot()
+    # test.plot_for_variable("foo")
