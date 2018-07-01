@@ -1,0 +1,8 @@
+Variable_set,Type,File,LineNo,Variable_get
+bar,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,9,
+foo,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,10,
+bar,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,11,foo
+fizz,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,12,
+foo,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,13,fizz
+foo,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,13,bar
+fizz,int,/Users/austin/Documents/GitHub/ClassSpy/test.py,14,fizz
